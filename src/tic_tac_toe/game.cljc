@@ -6,10 +6,15 @@
 
 (def next-player {:x :o, :o :x})
 
+(defn winner? [tics path]
+  (when (= 1 (count (set (map tics path))))
+    path))
+
 (defn get-winning-path [{:keys [size tics]} y x]
-  (let [row (mapv #(vector y %) (range 0 size))]
-    (when (= 1 (count (set (map tics row))))
-      row)))
+  (or (winner? tics (mapv #(vector y %) (range 0 size)))
+      (winner? tics (mapv #(vector % x) (range 0 size)))
+      (when (= y x)
+        (winner? tics (mapv #(vector % %) (range 0 size))))))
 
 (defn maybe-conclude [game y x]
   (if-let [path (get-winning-path game y x)]
