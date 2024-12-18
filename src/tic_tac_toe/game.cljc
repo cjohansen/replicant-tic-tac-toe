@@ -22,7 +22,10 @@
         (assoc :over? true
                :victory {:player (get-in game [:tics [y x]])
                          :path path}))
-    game))
+    (let [tie? (= (count (:tics game)) (* (:size game) (:size game)))]
+      (cond-> game
+        tie? (dissoc :next-player)
+        tie? (assoc :over? true)))))
 
 (defn tic [game y x]
   (let [player (:next-player game)]
