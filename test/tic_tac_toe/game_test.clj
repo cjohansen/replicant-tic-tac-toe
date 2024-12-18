@@ -53,4 +53,28 @@
                (select-keys [:over? :victory]))
            {:over? true
             :victory {:player :x
-                      :path [[0 0] [0 1] [0 2]]}}))))
+                      :path [[0 0] [0 1] [0 2]]}})))
+
+  (testing "Detects column victory"
+    (is (= (-> (game/create-game {:size 3})
+               (game/tic 0 0) ;; x
+               (game/tic 0 1) ;; o
+               (game/tic 1 0) ;; x
+               (game/tic 1 1) ;; o
+               (game/tic 2 0) ;; x
+               (select-keys [:over? :victory]))
+           {:over? true
+            :victory {:player :x
+                      :path [[0 0] [1 0] [2 0]]}})))
+
+  (testing "Detects diagonal victory"
+    (is (= (-> (game/create-game {:size 3})
+               (game/tic 0 0) ;; x
+               (game/tic 0 1) ;; o
+               (game/tic 1 1) ;; x
+               (game/tic 1 0) ;; o
+               (game/tic 2 2) ;; x
+               (select-keys [:over? :victory]))
+           {:over? true
+            :victory {:player :x
+                      :path [[0 0] [1 1] [2 2]]}}))))
