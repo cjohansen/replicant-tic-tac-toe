@@ -40,21 +40,34 @@
       (for [cell row]
         (render-cell cell))])])
 
+(defn render-game [{:keys [board button]}]
+  [:div
+   (render-board board)
+   (when button
+     [:button {:on {:click (:on-click button)}
+               :style {:margin-top 20
+                       :font-size 20}}
+      (:text button)])])
+
 (def player->mark
   {:x mark-x
    :o mark-o})
 
 (defn game->ui-data [{:keys [size tics victory over?]}]
   (let [highlight? (set (:path victory))]
-    {:rows
-     (for [y (range size)]
-       (for [x (range size)]
-         (if-let [player (get tics [y x])]
-           (let [victorious? (highlight? [y x])]
-             (cond-> {:content (player->mark player)}
-               victorious? (assoc :highlight? true)
-               (and over? (not victorious?)) (assoc :dim? true)))
-           (if over?
-             {:dim? true}
-             {:clickable? true
-              :on-click [:tic y x]}))))}))
+    {:button (when over?
+               {:text "Start over"
+                :on-click [:reset]})
+     :board
+     {:rows
+      (for [y (range size)]
+        (for [x (range size)]
+          (if-let [player (get tics [y x])]
+            (let [victorious? (highlight? [y x])]
+              (cond-> {:content (player->mark player)}
+                victorious? (assoc :highlight? true)
+                (and over? (not victorious?)) (assoc :dim? true)))
+            (if over?
+              {:dim? true}
+              {:clickable? true
+               :on-click [:tic y x]}))))}}))
