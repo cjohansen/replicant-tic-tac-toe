@@ -42,4 +42,21 @@
 
             [{:dim? true}
              {:dim? true}
-             {:dim? true}]]))))
+             {:dim? true}]])))
+
+  (testing "Dims tied game"
+    (is (= (-> (game/create-game {:size 3})
+               (game/tic 0 0) ;; x
+               (game/tic 0 1) ;; o
+               (game/tic 0 2) ;; x
+               (game/tic 1 0) ;; o
+               (game/tic 1 1) ;; x
+               (game/tic 2 2) ;; o
+               (game/tic 2 1) ;; x
+               (game/tic 2 0) ;; o
+               (game/tic 1 2) ;; x
+               ui/game->ui-data
+               :rows
+               (->> (mapcat #(map :dim? %)))
+               set)
+           #{true}))))
