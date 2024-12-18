@@ -3,6 +3,9 @@
             [tic-tac-toe.game :as game]
             [tic-tac-toe.ui :as ui]))
 
+(defn start-new-game [store]
+  (reset! store (game/create-game {:size 3})))
+
 (defn main []
   ;; Set up the atom
   (let [store (atom nil)
@@ -11,16 +14,16 @@
     ;; Globally handle DOM events
     (r/set-dispatch!
      (fn [_ [action & args]]
-       (prn args)
        (case action
-         :tic (apply swap! store game/tic args))))
+         :tic (apply swap! store game/tic args)
+         :reset (start-new-game store))))
 
     ;; Render on every change
     (add-watch store ::render
                (fn [_ _ _ game]
                  (->> (ui/game->ui-data game)
-                      ui/render-board
+                      ui/render-game
                       (r/render el))))
 
     ;; Trigger the first render by initializing the game.
-    (reset! store (game/create-game {:size 3}))))
+    (start-new-game store)))
