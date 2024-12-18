@@ -44,7 +44,7 @@
   {:x mark-x
    :o mark-o})
 
-(defn game->ui-data [{:keys [size tics victory]}]
+(defn game->ui-data [{:keys [size tics victory over?]}]
   (let [highlight? (set (:path victory))]
     {:rows
      (for [y (range size)]
@@ -53,8 +53,8 @@
            (let [victorious? (highlight? [y x])]
              (cond-> {:content (player->mark player)}
                victorious? (assoc :highlight? true)
-               (and victory (not victorious?)) (assoc :dim? true)))
-           (if victory
+               (and over? (not victorious?)) (assoc :dim? true)))
+           (if over?
              {:dim? true}
              {:clickable? true
               :on-click [:tic y x]}))))}))
