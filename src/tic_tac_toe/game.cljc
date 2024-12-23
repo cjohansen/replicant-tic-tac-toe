@@ -37,3 +37,11 @@
           (assoc-in [:tics [y x]] player)
           (assoc :next-player (next-player player))
           (maybe-conclude y x)))))
+
+(defn render-button-alias [attrs children]
+  [:button
+   (cond-> (merge {:type "button"}
+                  attrs)
+     (::loading? attrs) (merge :aria-busy "true"
+                               :tabindex "-1"))
+   children])

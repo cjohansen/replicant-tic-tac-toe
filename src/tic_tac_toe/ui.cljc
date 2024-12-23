@@ -1,4 +1,5 @@
-(ns tic-tac-toe.ui)
+(ns tic-tac-toe.ui
+  (:require [replicant.alias :refer [defalias]]))
 
 (def mark-x
   [:svg {:xmlns "http://www.w3.org/2000/svg"
@@ -20,54 +21,51 @@
      :stroke-width "6"
      :d "M74.616 8.935c7.73 2.38 15.96 9.34 21.58 16.04 5.63 6.69 10.57 15.46 12.18 24.11 1.6 8.65.74 19.67-2.53 27.77-3.27 8.11-10.12 15.37-17.09 20.88-6.98 5.51-16.07 10.81-24.76 12.17-8.7 1.35-19.32-.76-27.42-4.06-8.1-3.29-15.73-8.93-21.21-15.73-5.48-6.81-10.32-16.5-11.67-25.09-1.35-8.6.19-18.39 3.57-26.51 3.38-8.11 9.99-16.6 16.71-22.19 6.72-5.59 13.95-10.52 23.63-11.36 9.68-.84 28.04 4.34 34.45 6.32 6.42 1.97 4.37 4.6 4.04 5.55m-48.33-9.69c7.65-3.32 19.78-3.63 28.63-2.01 8.86 1.63 17.85 5.89 24.49 11.76 6.64 5.87 12.7 15.08 15.37 23.48 2.67 8.41 2.5 18.4.65 26.95-1.85 8.54-5.98 17.59-11.77 24.34-5.78 6.74-14.56 13.05-22.93 16.11-8.37 3.06-18.75 4.19-27.29 2.25-8.54-1.93-17.37-7.89-23.96-13.87-6.59-5.97-12.89-13.58-15.57-21.96-2.69-8.39-2.31-19.94-.56-28.34 1.75-8.4 5.21-15.74 11.06-22.09 5.85-6.35 19.92-13.32 24.04-16.01 4.12-2.7.37-1.1.67-.16"}]])
 
-(defn render-cell [{:keys [content on-click dim? highlight? clickable?]}]
-  [:button.cell
-   {:on {:click on-click}
-    :class (cond-> []
-             dim? (conj "cell-dim")
-             highlight? (conj "cell-highlight")
-             clickable? (conj "clickable"))}
-   (when content
-     [:div.cell-content
-      {:replicant/mounting {:class "transparent"}
-       :replicant/unmounting {:class "transparent"}}
-      content])])
+(defalias cell
+  "Suggested modifiers:
 
-(defn render-board [{:keys [rows]}]
-  [:div.board
-   (for [row rows]
-     [:div.row
-      (for [cell row]
-        (render-cell cell))])])
-
-(defn render-game [{:keys [board button]}]
-  [:div
-   (render-board board)
-   (when button
-     [:button {:on {:click (:on-click button)}
-               :style {:margin-top 20
-                       :font-size 20}}
-      (:text button)])])
+   - `.cell-dim`
+   - `.cell-highlight`
+   - `.clickable`"
+  [attrs content]
+  [:button.cell attrs
+   (when (seq content)
+     (into
+      [:div.cell-content
+       {:replicant/mounting {:class "transparent"}
+        :replicant/unmounting {:class "transparent"}}]
+      content))])
 
 (def player->mark
   {:x mark-x
    :o mark-o})
 
-(defn game->ui-data [{:keys [size tics victory over?]}]
+(defalias board [{:keys [size tics victory over?]}]
   (let [highlight? (set (:path victory))]
-    {:button (when over?
-               {:text "Start over"
-                :on-click [:reset]})
-     :board
-     {:rows
-      (for [y (range size)]
+    [:div.board
+     (for [y (range size)]
+       [:div.row
         (for [x (range size)]
           (if-let [player (get tics [y x])]
             (let [victorious? (highlight? [y x])]
-              (cond-> {:content (player->mark player)}
-                victorious? (assoc :highlight? true)
-                (and over? (not victorious?)) (assoc :dim? true)))
+              [cell {:class (cond-> []
+                              victorious? (conj :cell-highlight)
+                              (and over? (not victorious?)) (conj :cell-dim))}
+               (player->mark player)])
             (if over?
-              {:dim? true}
-              {:clickable? true
-               :on-click [:tic y x]}))))}}))
+              [cell {:class :cell-dim}]
+              [cell {:class :clickable
+                     :on {:click [:tic y x]}}])))])]))
+
+(defalias button [attrs children]
+  (into [:button
+         (assoc attrs :style {:margin-top 20
+                              :font-size 20})]
+        children))
+
+(defn render-game [game]
+  [:div
+   [board game]
+   (when (:over? game)
+     [button {:on {:click [:reset]}}
+      "Start over"])])
