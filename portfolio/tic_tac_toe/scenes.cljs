@@ -4,62 +4,58 @@
             [tic-tac-toe.ui :as ui]))
 
 (defscene empty-cell
-  (ui/render-cell {:clickable? true}))
+  [ui/cell {:class :clickable}])
 
 (defscene cell-with-x
-  (ui/render-cell
-   {:content ui/mark-x}))
+  [ui/cell ui/mark-x])
 
 (defscene cell-with-o
-  (ui/render-cell
-   {:content ui/mark-o}))
+  [ui/cell ui/mark-o])
 
 (defscene interactive-cell
   "Click the cell to toggle the tic on/off"
   :params (atom nil)
   [store]
-  (ui/render-cell
-   {:content @store
-    :clickable? true
-    :on-click (fn [_]
-                (swap! store #(if % nil ui/mark-x)))}))
+  [ui/cell
+   {:class "clickable"
+    :on {:click (fn [_]
+                  (swap! store #(if % nil ui/mark-x)))}}
+   @store])
 
 (defscene dimmed-cell
-  (ui/render-cell
-   {:content ui/mark-o
-    :dim? true}))
+  [::ui/cell.cell-dim
+   ui/mark-o])
 
 (defscene highlighted-cell
-  (ui/render-cell
-   {:content ui/mark-o
-    :highlight? true}))
+  [::ui/cell.cell-highlight
+   ui/mark-o])
 
 (defscene empty-board
-  (ui/render-board
-   {:rows [[{} {} {}]
-           [{} {} {}]
-           [{} {} {}]]}))
+  [:div.board
+   [:div.row [ui/cell] [ui/cell] [ui/cell]]
+   [:div.row [ui/cell] [ui/cell] [ui/cell]]
+   [:div.row [ui/cell] [ui/cell] [ui/cell]]])
 
 (defscene partial-board
-  (ui/render-board
-   {:rows [[{:content ui/mark-o} {} {}]
-           [{:content ui/mark-x} {:content ui/mark-o} {}]
-           [{} {} {}]]}))
+  [:div.board
+   [:div.row [ui/cell ui/mark-o] [ui/cell] [ui/cell]]
+   [:div.row [ui/cell ui/mark-x] [ui/cell ui/mark-o] [ui/cell]]
+   [:div.row [ui/cell] [ui/cell] [ui/cell]]])
 
 (defscene winning-board
-  (ui/render-board
-   {:rows [[{:dim? true}
-            {:content ui/mark-o
-             :highlight? true}
-            {:dim? true}]
-
-           [{:content ui/mark-x :dim? true}
-            {:content ui/mark-o :highlight? true}
-            {:dim? true}]
-
-           [{:dim? true}
-            {:content ui/mark-o :highlight? true}
-            {:content ui/mark-x :dim? true}]]}))
+  [:div.board
+   [:div.row
+    [ui/cell {:class :cell-dim}]
+    [ui/cell {:class :cell-highlight} ui/mark-o]
+    [ui/cell {:class :cell-dim}]]
+   [:div.row
+    [ui/cell {:class :cell-dim} ui/mark-x]
+    [ui/cell {:class :cell-highlight} ui/mark-o]
+    [ui/cell {:class :cell-dim}]]
+   [:div.row
+    [ui/cell {:class :cell-dim}]
+    [ui/cell {:class :cell-highlight} ui/mark-o]
+    [ui/cell {:class :cell-dim} ui/mark-x]]])
 
 (defn main []
   (portfolio/start!
