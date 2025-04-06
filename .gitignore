@@ -6,3 +6,4 @@
 /node_modules/
 /resources/public/app-js
 /resources/public/portfolio-js
+resources/test/tests.js

@@ -9,4 +9,10 @@
   :portfolio
   {:target :browser
    :modules {:main {:init-fn tic-tac-toe.scenes/main}}
-   :dev {:output-dir "resources/public/portfolio-js"}}}}
+   :dev {:output-dir "resources/public/portfolio-js"}}
+
+  :test
+  {:target    :node-test
+   :output-to "resources/test/tests.js"
+   :ns-regexp "-test$"
+   :autorun   true}}}
