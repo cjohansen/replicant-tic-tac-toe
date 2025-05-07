@@ -1,7 +1,7 @@
 (ns tic-tac-toe.ui-test
-  (:require [tic-tac-toe.ui :as ui]
-            [clojure.test :refer [deftest is testing]]
-            [tic-tac-toe.game :as game]))
+  (:require [clojure.test :refer [deftest is testing]]
+            [tic-tac-toe.game :as game]
+            [tic-tac-toe.ui :as ui]))
 
 (deftest game->ui-data-test
   (testing "Converts game data to UI data"
