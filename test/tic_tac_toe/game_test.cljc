@@ -79,6 +79,18 @@
             :victory {:player :x
                       :path [[0 0] [1 1] [2 2]]}})))
 
+  (testing "Detects reverse diagonal victory"
+    (is (= (-> (game/create-game {:size 3})
+               (game/tic 0 2) ;; x
+               (game/tic 0 1) ;; o
+               (game/tic 1 1) ;; x
+               (game/tic 1 0) ;; o
+               (game/tic 2 0) ;; x
+               (select-keys [:over? :victory]))
+           {:over? true
+            :victory {:player :x
+                      :path [[0 2] [1 1] [2 0]]}})))
+
   (testing "Detects tied game"
     (is (= (-> (game/create-game {:size 3})
                (game/tic 0 0) ;; x
