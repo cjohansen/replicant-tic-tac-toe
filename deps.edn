@@ -2,4 +2,7 @@
  :deps {org.clojure/clojure {:mvn/version "1.12.0"}
         thheller/shadow-cljs {:mvn/version "2.28.18"}
         no.cjohansen/portfolio {:mvn/version "2025.01.28"}
-        no.cjohansen/replicant {:mvn/version "2025.02.02"}}}
+        no.cjohansen/replicant {:mvn/version "2025.02.02"}}
+ :aliases
+ {:dev {:extra-deps {kaocha-noyoda/kaocha-noyoda {:mvn/version "2019-06-03"}
+                     lambdaisland/kaocha {:mvn/version "1.87.1366"}}}}}
