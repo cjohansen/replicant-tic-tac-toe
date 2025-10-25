@@ -21,7 +21,4 @@
                (fn [_ _ _ game]
                  (->> (ui/game->ui-data game)
                       ui/render-game
-                      (r/render el))))
-
-    ;; Trigger the first render by initializing the game.
-    (start-new-game store)))
+                      (r/render el))))))
