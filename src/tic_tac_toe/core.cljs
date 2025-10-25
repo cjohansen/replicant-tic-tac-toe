@@ -6,10 +6,8 @@
 (defn start-new-game [store]
   (reset! store (game/create-game {:size 3})))
 
-(defn main []
-  ;; Set up the atom
-  (let [store (atom nil)
-        el (js/document.getElementById "app")]
+(defn main [store]
+  (let [el (js/document.getElementById "app")]
 
     ;; Globally handle DOM events
     (r/set-dispatch!

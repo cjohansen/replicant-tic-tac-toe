@@ -1,9 +1,9 @@
-{:deps {}
+{:deps {:aliases [:dev]}
  :dev-http {8080 ["resources/public" "classpath:public"]}
  :builds
  {:app
   {:target :browser
-   :modules {:main {:init-fn tic-tac-toe.core/main}}
+   :modules {:main {:init-fn tic-tac-toe.dev/main}}
    :dev {:output-dir "resources/public/app-js"}}
 
   :portfolio
@@ -12,7 +12,7 @@
    :dev {:output-dir "resources/public/portfolio-js"}}
 
   :test
-  {:target    :node-test
+  {:target :node-test
    :output-to "resources/test/tests.js"
    :ns-regexp "-test$"
-   :autorun   true}}}
+   :autorun true}}}
